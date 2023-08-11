@@ -131,16 +131,134 @@ app.get('/', async(req, res) => {
     res.send(data);
 });
 
-// listen the app 
+// create a get erquest that returns the data based on the query
+app.get('/filter', async(req, res) => {
+    var data = {};
+    const year = req.body.year;
+    console.log(req.body);
 
-// Intensity
-// Likelihood
-// Relevance
-// Year
-// Country
-// Topics
-// Region
-// City 
+    const match = {
+        $match: req.body,
+    }
+
+    console.log(match);
+    const relevance = await DataModel.aggregate([
+        match,
+        {
+          $group: {
+            _id: '$relevance',
+            count: { $sum: 1 }
+          }
+        },
+        {
+          $sort: { _id: 1 }
+        }
+      ]);
+
+    const Intensity = await DataModel.aggregate([
+        match,
+        {
+            $group: {
+                _id: '$intensity',
+                count: { $sum: 1 }
+            }
+        },
+        {
+            $sort: { _id: 1 }
+        }
+    ]);
+
+
+    const Likelihood = await DataModel.aggregate([
+        match,
+        {
+            $group: {
+                _id: '$likelihood',
+                count: { $sum: 1 }
+            }
+        },
+        {
+            $sort: { _id: 1 }
+        }
+    ]);
+
+    const Year = await DataModel.aggregate([
+        match,
+        {
+            $group: {
+                _id: '$year',
+                count: { $sum: 1 }
+            }
+        },
+        {
+            $sort: { _id: 1 }
+        }
+    ]);
+
+    const Country = await DataModel.aggregate([
+        match,
+        {
+            $group: {
+                _id: '$country',
+                count: { $sum: 1 }
+            }
+        },
+        {
+            $sort: { _id: 1 }
+        }
+    ]);
+
+    const Topics = await DataModel.aggregate([
+        match,
+        {
+            $group: {
+                _id: '$topics',
+                count: { $sum: 1 }
+            }
+        },
+        {
+            $sort: { _id: 1 }
+        }
+    ]);
+
+
+    const Region = await DataModel.aggregate([
+        match,
+        {
+            $group: {
+                _id: '$region',
+                count: { $sum: 1 }
+            }
+        },
+        {
+            $sort: { _id: 1 }
+        }
+    ]);
+
+    const City = await DataModel.aggregate([
+        match,
+        {
+            $group: {
+                _id: '$city',
+                count: { $sum: 1 }
+            }
+        },
+        {
+            $sort: { _id: 1 }
+        }
+    ]);
+
+    data.city = City;
+    data.region = Region;
+    data.topics = Topics;
+    data.country = Country;
+    data.year = Year;
+    data.likelihood = Likelihood;
+    data.relevance = relevance;
+    data.intensity = Intensity;
+    res.send(data);
+});
+
 
 
 app.listen(3000, () => {
